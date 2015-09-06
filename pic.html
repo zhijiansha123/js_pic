@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>上课——焦点图</title>
+<style>
+* {
+	margin: 0 auto;
+}
+.tab {
+	width: 500px;
+	height: 240px;
+	overflow: hidden;
+	position: relative;
+	top: 15px;
+	left: 0;
+	background: #9933FF;
+	-webkit-user-select: none;
+}
+.pic {
+	width: 2500px;
+	height: 240px;
+	overflow: hidden;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+.pic ul {
+	list-style: none;
+	margin: 0 auto;
+	padding: 0;
+}
+.pic ul li {
+	width: 500px;
+	height: 240px;
+	line-height:240px; 
+	text-align:center;
+	color:#fff;
+	overflow: hidden;
+	float: left;
+	font-size:550%;
+}
+.number {
+	width: 160px;
+	height: 24px;
+	overflow: hidden;
+	position: absolute;
+	top: 205px;
+	right: 20px;
+}
+.number ol {
+	list-style: none;
+	margin: 0 auto;
+	padding: 0
+}
+.number ol li {
+	width: 20px;
+	height: 20px;
+	line-height: 20px;
+	text-align: center;
+	border-radius: 50%;
+	border: solid 2px #990000;
+	float: left;
+	margin-right: 5px;
+	background: #FFFFFF;
+	cursor: pointer;
+}
+.number ol li.current {
+	background: #CC3300;
+}
+.leri {
+	position: absolute;
+	top: 100px;
+	left: 10px;
+	width: 470px;
+	height: auto;
+	overflow: hidden;
+	z-index: 20;
+	text-align: center;
+}
+.leri span{ border-radius:50%;}
+.leri span.left {
+	width: 50px;
+	height: 50px;
+	overflow: hidden;
+	line-height: 50px;
+	float: left;
+	margin-left: 10px;
+	border: solid 2px #990000;
+	background: #FFFFFF;
+	cursor: pointer;
+}
+.leri span.right {
+	width: 50px;
+	height: 50px;
+	overflow: hidden;
+	line-height: 50px;
+	float: right;
+	margin-right: 10px;
+	border: solid 2px #990000;
+	background: #FFFFFF;
+	cursor: pointer
+}
+</style>
+</head>
+
+<body>
+<div class="tab">
+  <div class="pic">
+    <ul>
+      <li style="background:#00CCFF" >111</li>
+      <li style="background:#990000">222</li>
+      <li style="background:green">333</li>
+      <li style="background:blue">444</li>
+      <li style="background:black;">555</li>
+     <!-- <li style="background:#00CCFF" >111</li>-->
+    </ul>
+  </div>
+  <div class="leri"><span class="left">left</span><span class="right">right</span></div>
+  <div class="number">
+    <ol>
+      <li class="current">1</li>
+      <li>2</li>
+      <li>3</li>
+      <li>4</li>
+      <li>5</li>
+    </ol>
+  </div>
+</div>
+<script>
+function move(ele,attr,target,fnCallback){
+ clearInterval(ele[attr+'timer']);
+ function _move(){
+	var cur=css(ele,attr),
+	    nSpeed=(target-cur)/10;
+		nSpeed=nSpeed>0?Math.ceil(nSpeed):Math.floor(nSpeed);
+		css(ele,attr,cur+nSpeed);
+		if(nSpeed===0){
+		 clearInterval(ele[attr+'timer']);
+		 ele[attr+'timer']=null;
+		 if(typeof fnCallback=="function"){
+			fnCallback.call(ele) 
+		  }	
+		} 
+  }	
+  ele[attr+'timer']=window.setInterval(_move,20);
+}
+
+function css(ele,attr,val){
+ if(typeof val=='undefined'){
+	try{
+	  return parseFloat(window.getComputedStyle(ele,null)[attr])	//parseFloat() 函数可解析一个字符串，并返回一个浮点数。
+	}catch(e){
+	 return parseFloat(ele,currentStyle[attr]);	//getComputedStyle(id,null) 只能获取样式 不能设置样式【getComputerStyle()方法返回一个CSSStyleDeclaration对象，其中包含当前元素的所有计算的样式】
+	}
+  }	else if(typeof val=="number"){
+    if(attr=="opactity"){
+	  ele.style.opacity=val;
+	  ele.style.filter="alpha(opacity='+val*100+')"	
+	}else{
+	  ele.style[attr]=val+'px';	
+	}
+  }
+}
+
+
+var oPic=document.getElementsByClassName('pic').item(0),
+    oBtn=document.getElementsByClassName('leri').item(0).getElementsByTagName('span'),
+	oNum=document.getElementsByClassName('number').item(0).getElementsByTagName('ol').item(0).getElementsByTagName('li'),
+	moveWidth=document.getElementsByClassName('tab').item(0).offsetWidth;
+	console.log(moveWidth)
+
+var oP=document.getElementsByClassName("pic")[0].getElementsByTagName("ul").item(0).getElementsByTagName('li').item(0);
+
+var oCopy=oP.cloneNode(true);
+console.log(oCopy.offsetWidth);
+document.getElementsByClassName("pic")[0].getElementsByTagName("ul").item(0).appendChild(oCopy);
+oPic.style.width=oPic.offsetWidth+oCopy.offsetWidth+"px";
+console.log("oPic.style.width:"+oPic.offsetWidth)
+
+//var mm=document.getElementsByClassName('number').item(0).getElementsByTagName('ol').item(0).getElementsByTagName('li');
+//console.log(mm)
+
+
+for(var i=0;i<oNum.length;i++){
+ oNum.item(i).n=i;
+ oNum.item(i).onclick=function(){
+ clearInterval(autoTimer);
+ if(step==oNum.length){
+	oNum.item(o).className=""; 
+  }else{
+	oNum.item(step).className="";  
+  }
+  oNum.item(this.n).className="current";
+  move(oPic,'left',this.n*-moveWidth);
+  step=this.n;
+  autoTimer=window.setInterval(moveLeft,5000);
+  }	
+}
+
+var step=0;
+function moveLeft(){
+ clearInterval(autoTimer);
+ step++;
+ if(step==oNum.length+1){
+	oPic.style.left=0;
+	step=1; 
+  }
+  changePic();
+  move(oPic,'left',step*-moveWidth)
+  autoTimer=window.setInterval(moveLeft,5000);
+}
+
+
+function moveRight(){
+ step--;
+ if(step==-1){
+	oPic.style.left=-moveWidth*oNum.length+'px';
+	step=oNum.length-1; 
+  }	
+  changePic();
+  move(oPic,'left',step*-moveWidth)
+}
+
+
+function changePic(){
+ for(var i=0;i<oNum.length;i++){
+  oNum.item(i).className="";	 
+ }
+ if(step==oNum.length){
+	  oNum.item(0).className="current";
+	}
+	else{
+	oNum.item(step).className="current";
+	}
+}
+
+oBtn.item(0).onclick=moveLeft;
+oBtn.item(1).onclick=moveRight;
+var autoTimer=window.setInterval(moveLeft,5000);
+</script>
+</body>
+</html>
